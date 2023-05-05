@@ -7,7 +7,6 @@ const getReturnUrl = (): URL | undefined => {
     const returnUrlRaw = searchParams.get("ReturnUrl");
     if (!returnUrlRaw) throw new Error("ReturnUrl not found");
     const returnUrl = new URL(returnUrlRaw);
-
     return returnUrl;
   } catch (err) {
     console.log(err);
