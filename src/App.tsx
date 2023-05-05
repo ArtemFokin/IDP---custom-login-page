@@ -9,10 +9,10 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route index element={<LoginPage />} />
       {/* <Route path="logout" element={<LogoutPage />} />
       <Route path="logout-success" element={<LogoutSuccessPage />} /> */}
-      <Route path="*" element={<Navigate to="login" />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }
