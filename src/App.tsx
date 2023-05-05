@@ -5,7 +5,9 @@ import { GOOGLE_CLIENT_ID, IDENTITY_SERVER_URI } from "./constants";
 const getReturnUrl = (): URL | undefined => {
   try {
     const searchParams = new URLSearchParams(window.location.search);
-    const returnUrl = new URL(searchParams.get("ReturnUrl"));
+    const returnUrlRaw = searchParams.get("ReturnUrl");
+    if (!returnUrlRaw) throw new Error("ReturnUrl not found");
+    const returnUrl = new URL(returnUrlRaw);
 
     return returnUrl;
   } catch (err) {
