@@ -2,8 +2,14 @@ import "./App.css";
 import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function App() {
+  
+  useEffect(()=>{
+    
+  }, [])
+  
   return (
     <Routes>
       <Route path="login" element={<LoginPage />} />
