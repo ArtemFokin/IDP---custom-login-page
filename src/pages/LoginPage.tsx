@@ -41,6 +41,7 @@ const LoginPage = () => {
     try {
       const response = await fetch(`${IDENTITY_SERVER_URI}/api/account/login`, {
         method: "POST",
+        credentials: "include",
         body: JSON.stringify({
           Username: email,
           Password: password,
@@ -54,6 +55,22 @@ const LoginPage = () => {
         console.log(response);
         throw new Error("Response is not OK");
       }
+
+      const response2 = await fetch(
+        `${IDENTITY_SERVER_URI}/api/account/login`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({
+            Username: email,
+            Password: password,
+            ReturnUrl: returnUrl?.toString(),
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       // console.log(await response.text());
 
       const data = await response.json();
