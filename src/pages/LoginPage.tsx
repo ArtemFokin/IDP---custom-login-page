@@ -54,7 +54,8 @@ const LoginPage = () => {
         returnUrl: returnUrl.toString(),
       });
 
-      window.location = response.returnUrl;
+      // window.location = response.returnUrl;
+      window.open(response.returnUrl);
     } catch (err) {
       console.log(err);
     }
