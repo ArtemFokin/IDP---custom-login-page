@@ -32,7 +32,7 @@ export const login = async (body: LoginBody) => {
     method: "POST",
     credentials: "include",
     body: JSON.stringify({
-      Email: body.email,
+      Username: body.email,
       Password: body.password,
       ReturnUrl: body.returnUrl,
     }),
