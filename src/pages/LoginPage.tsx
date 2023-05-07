@@ -61,33 +61,38 @@ const LoginPage = () => {
     }
   };
 
-  if (!returnUrl || !redirect_uri) {
+  if (!returnUrl || !redirect_uri || !googleCallbackUrl) {
     return <div>ReturnUrl not found</div>;
   }
 
   return (
     <div className="App">
       <div className={styles.formsWrapper}>
-        {googleCallbackUrl && <GoogleSignIn callbackUrl={googleCallbackUrl} />}
         {!showPasswordForm && (
-          <form onSubmit={onEmailFormSubmit} className={styles.fluidForm}>
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter Email"
-            />
-          </form>
+          <>
+            <GoogleSignIn callbackUrl={googleCallbackUrl} />
+            <form onSubmit={onEmailFormSubmit} className={styles.fluidForm}>
+              <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter Email"
+              />
+            </form>
+          </>
         )}
         {showPasswordForm && (
-          <form onSubmit={onPasswordFormSubmit} className={styles.fluidForm}>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter Password"
-            />
-          </form>
+          <>
+            <p>{email}</p>
+            <form onSubmit={onPasswordFormSubmit} className={styles.fluidForm}>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter Password"
+              />
+            </form>
+          </>
         )}
       </div>
     </div>
