@@ -1,8 +1,9 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import { checkEmailExists, login } from "../api/idp";
 import { sendAccountNotFound } from "../api/parentWindow";
 import { GoogleSignIn } from "../components/GoogleSinIn";
-import { GOOGLE_CLIENT_ID, IDENTITY_SERVER_URI } from "../constants";
+import { IDENTITY_SERVER_URI } from "../constants";
+import styles from "./LoginPage.module.css";
 
 const getReturnUrl = (): URL | undefined => {
   try {
@@ -66,10 +67,10 @@ const LoginPage = () => {
 
   return (
     <div className="App">
-      <div>
+      <div className={styles.formsWrapper}>
         {googleCallbackUrl && <GoogleSignIn callbackUrl={googleCallbackUrl} />}
         {!showPasswordForm && (
-          <form onSubmit={onEmailFormSubmit}>
+          <form onSubmit={onEmailFormSubmit} className={styles.fluidForm}>
             <input
               type="text"
               value={email}
@@ -79,7 +80,7 @@ const LoginPage = () => {
           </form>
         )}
         {showPasswordForm && (
-          <form onSubmit={onPasswordFormSubmit}>
+          <form onSubmit={onPasswordFormSubmit} className={styles.fluidForm}>
             <input
               type="password"
               value={password}
