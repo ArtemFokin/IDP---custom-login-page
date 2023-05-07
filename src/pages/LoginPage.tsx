@@ -1,4 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { checkEmailExists, login } from "../api/idp";
+import { sendAccountNotFound } from "../api/parentWindow";
+import { GoogleSignIn } from "../components/GoogleSinIn";
 import { GOOGLE_CLIENT_ID, IDENTITY_SERVER_URI } from "../constants";
 
 const getReturnUrl = (): URL | undefined => {
@@ -14,9 +17,9 @@ const getReturnUrl = (): URL | undefined => {
 };
 
 const LoginPage = () => {
-  const isMountedRef = useRef<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   const returnUrl = getReturnUrl();
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
@@ -24,60 +27,35 @@ const LoginPage = () => {
     redirect_uri &&
     `${IDENTITY_SERVER_URI}/ExternalLogin/GoogleCallback?returnUrl=${redirect_uri}`;
 
-  useEffect(() => {
-    if (isMountedRef.current) return;
-    isMountedRef.current = true;
-    const script = document.createElement("script");
-
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-
-    document.body.appendChild(script);
-  }, []);
-
-  const onSubmitHandler = async (e: FormEvent) => {
+  const onEmailFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${IDENTITY_SERVER_URI}/api/account/login`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({
-          Username: email,
-          Password: password,
-          ReturnUrl: returnUrl?.toString(),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        console.log(response);
-        throw new Error("Response is not OK");
+      const { isExist } = await checkEmailExists(email);
+
+      if (isExist) {
+        setShowPasswordForm(true);
+      } else {
+        sendAccountNotFound(email);
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-      const response2 = await fetch(
-        `${IDENTITY_SERVER_URI}/api/account/login`,
-        {
-          method: "POST",
-          credentials: "include",
-          body: JSON.stringify({
-            Username: email,
-            Password: password,
-            ReturnUrl: returnUrl?.toString(),
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // console.log(await response.text());
+  const onPasswordFormSubmit = async (e: FormEvent) => {
+    if (!returnUrl) return;
+    e.preventDefault();
 
-      const data = await response.json();
+    try {
+      const response = await login({
+        email,
+        password,
+        returnUrl: returnUrl.toString(),
+      });
 
-      console.log({ data });
-
-      window.location = data.returnUrl;
+      // window.location = response.returnUrl;
+      window.open(response.returnUrl);
     } catch (err) {
       console.log(err);
     }
@@ -90,36 +68,25 @@ const LoginPage = () => {
   return (
     <div className="App">
       <div>
-        <div
-          id="g_id_onload"
-          data-client_id={GOOGLE_CLIENT_ID}
-          data-login_uri={googleCallbackUrl}
-          data-auto_prompt="false"
-        />
-        <div
-          className="g_id_signin"
-          data-type="standard"
-          data-size="large"
-          data-theme="outline"
-          data-text="sign_in_with"
-          data-shape="rectangular"
-          data-logo_alignment="left"
-        />
-        <form onSubmit={onSubmitHandler}>
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button name="button" type="submit">
-            Login
-          </button>
-        </form>
+        {googleCallbackUrl && <GoogleSignIn callbackUrl={googleCallbackUrl} />}
+        {!showPasswordForm && (
+          <form onSubmit={onEmailFormSubmit}>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </form>
+        )}
+        {showPasswordForm && (
+          <form onSubmit={onPasswordFormSubmit}>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </form>
+        )}
       </div>
     </div>
   );
