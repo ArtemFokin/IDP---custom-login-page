@@ -37,7 +37,8 @@ const LoginPage = () => {
       if (isExist) {
         setShowPasswordForm(true);
       } else {
-        sendAccountNotFound(email);
+        window.location.href = redirect_uri + "?error=NotFound"
+        // sendAccountNotFound(email);
       }
     } catch (err) {
       console.log(err);
@@ -83,7 +84,10 @@ const LoginPage = () => {
         )}
         {showPasswordForm && (
           <>
-            <p>{email}</p>
+            <p>
+              Enter Password for <br />
+              {email}
+            </p>
             <form onSubmit={onPasswordFormSubmit} className={styles.fluidForm}>
               <input
                 type="password"
