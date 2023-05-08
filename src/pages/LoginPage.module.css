@@ -6,3 +6,26 @@
 .fluidForm {
   display: grid;
 }
+
+
+.input{
+  width: 100%;
+  padding: 12px 27px;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid rgba(15, 155, 214, 0.25);
+  color: #222;
+  outline: none;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+
+  &:hover {
+    border: 1px solid #0F9BD6;
+  }
+
+  &:focus {
+    
+  }
+}

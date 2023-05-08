@@ -24,6 +24,7 @@ const LoginPage = () => {
 
   const returnUrl = getReturnUrl();
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
+  console.log({redirect_uri:redirect_uri?.toString()});
   const googleCallbackUrl =
     redirect_uri &&
     `${IDENTITY_SERVER_URI}/ExternalLogin/GoogleCallback?returnUrl=${redirect_uri}`;
@@ -41,7 +42,6 @@ const LoginPage = () => {
         const redurectURL = new URL(redirect_uri);
         redurectURL.searchParams.append("error", "NotFound");
         redurectURL.searchParams.append("email", email);
-        console.log({ redurectURL });
         window.location.href = redurectURL.toString();
       }
     } catch (err) {
@@ -82,6 +82,7 @@ const LoginPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
+                className={styles.input}
               />
             </form>
           </>
@@ -98,6 +99,7 @@ const LoginPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
+                className={styles.input}
               />
             </form>
           </>
