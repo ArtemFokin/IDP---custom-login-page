@@ -29,6 +29,7 @@ const LoginPage = () => {
     `${IDENTITY_SERVER_URI}/ExternalLogin/GoogleCallback?returnUrl=${redirect_uri}`;
 
   const onEmailFormSubmit = async (e: FormEvent) => {
+    if(!redirect_uri) return;
     e.preventDefault();
 
     try {
@@ -37,8 +38,11 @@ const LoginPage = () => {
       if (isExist) {
         setShowPasswordForm(true);
       } else {
-        window.location.href = redirect_uri + "?error=NotFound"
-        // sendAccountNotFound(email);
+        const redurectURL = new URL(redirect_uri);
+        redurectURL.searchParams.append("error", "NotFound");
+        redurectURL.searchParams.append("email", email);
+        console.log({ redurectURL });
+        window.location.href = redurectURL.toString();
       }
     } catch (err) {
       console.log(err);
