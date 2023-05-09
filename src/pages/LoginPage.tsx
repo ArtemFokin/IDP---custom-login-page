@@ -1,10 +1,9 @@
-import {  useEffect, useMemo, useRef, useState } from "react";
+import {   useMemo, useRef, useState } from "react";
 import { GoogleSignIn } from "../components/GoogleSinIn";
 import { PasswordForm } from "../components/PasswordForm";
 import commonStyles from '../styles/common.module.css';
 import { EmailForm } from "../components/EmailForm";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
-import { checkEmailExists } from "../api/idp";
 
 const getReturnUrl = (): URL | undefined => {
   try {
@@ -26,10 +25,6 @@ const LoginPage = () => {
   const returnUrl = useMemo(getReturnUrl, []);
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
   
-  useEffect(()=>{
-    checkEmailExists("aewrwer").then(console.log).catch(console.log); 
-  }, [])
-
   const onEmailFormFinish = (email:string, isExist: boolean)=>{
     if(!redirect_uri) return;
     if (isExist) {

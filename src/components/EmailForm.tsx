@@ -12,6 +12,7 @@ export const EmailForm:FC<EmailFormProps> = ({onFinish}) => {
 
 
   const onSubmit = async (e: FormEvent)=>{
+    e.preventDefault();
     setDisabled(true)
     try {
       const { isExist } = await checkEmailExists(email); 
