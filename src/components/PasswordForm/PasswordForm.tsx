@@ -45,7 +45,8 @@ export const PasswordForm: FC<PasswordFormProps> = ({
                     className={styles.backBtn}
                 />
                 <p className={commonStyles.text}>
-                    Enter Password for <br />
+                    Enter Password for
+                    <br />
                     {email}
                 </p>
             </div>
