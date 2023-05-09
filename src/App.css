@@ -24,9 +24,9 @@
 }
 
 .fade-enter-active{
-  transition: opacity .3s ease-out, transform 1s ease-ou;
+  transition: opacity .5s ease-out, transform .5s ease-ou;
 }
 
 .fade-exit-active {
-  transition: opacity .3s ease-in, transform 1s ease-in;
+  transition: opacity .5s ease-in, transform .5s ease-in;
 }
