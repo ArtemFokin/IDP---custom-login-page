@@ -24,9 +24,9 @@
 }
 
 .fade-enter-active{
-  transition: opacity .5s ease-out, transform .5s ease-out;
+  transition: opacity .5s cubic-bezier(0, 0.66, 0, 0.99), transform .5s cubic-bezier(0, 0.66, 0, 0.99);
 }
 
 .fade-exit-active {
-  transition: opacity .3s ease-in, transform .3s ease-in;
+  transition: opacity .3s cubic-bezier(0.43, 0.03, 1, 0.07), transform .3s cubic-bezier(0.43, 0.03, 1, 0.07);
 }
