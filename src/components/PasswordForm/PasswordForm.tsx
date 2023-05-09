@@ -1,5 +1,5 @@
 import { login } from "../../api/idp";
-import commonStyles from "../../styles/common.module.css";
+import commonStyles from "../../styles/common.module.scss";
 import styles from "./styles.module.css";
 import { FC, FormEvent, useState } from "react";
 import SendButton from "../SendButton/SendButton";

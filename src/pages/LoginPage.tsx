@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { GoogleSignIn } from "../components/GoogleSinIn";
 import { PasswordForm } from "../components/PasswordForm/PasswordForm";
-import commonStyles from "../styles/common.module.css";
+import commonStyles from "../styles/common.module.scss";
 import { EmailForm } from "../components/EmailForm";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 
