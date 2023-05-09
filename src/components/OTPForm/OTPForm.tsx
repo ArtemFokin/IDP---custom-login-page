@@ -10,6 +10,7 @@ type OTPFormProps = {
 const OTPForm: FC<OTPFormProps> = () => {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    console.log(e);
   };
 
   return (
