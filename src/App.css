@@ -22,7 +22,11 @@
   opacity: 0;
   transform: translateX(100%);
 }
-.fade-enter-active,
+
+.fade-enter-active{
+  transition: opacity .3s ease-out, transform 1s ease-ou;
+}
+
 .fade-exit-active {
-  transition: opacity .3s, transform .3s;
+  transition: opacity .3s ease-in, transform 1s ease-in;
 }
