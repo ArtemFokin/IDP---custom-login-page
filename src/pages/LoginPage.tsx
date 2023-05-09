@@ -1,9 +1,13 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { checkEmailExists, login } from "../api/idp";
 import { sendAccountNotFound } from "../api/parentWindow";
 import { GoogleSignIn } from "../components/GoogleSinIn";
 import { IDENTITY_SERVER_URI } from "../constants";
 import styles from "./LoginPage.module.css";
+import { PasswordForm } from "../components/PasswordForm/PasswordForm";
+import commonStyles from '../styles/common.module.css';
+import { EmailForm } from "../components/EmailForm";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
 
 const getReturnUrl = (): URL | undefined => {
   try {
@@ -18,93 +22,52 @@ const getReturnUrl = (): URL | undefined => {
 };
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-
+  const [emailForPasswordForm, setEmailForPasswordForm] = useState('');
+  const animRef = useRef<HTMLDivElement | null>(null);
   const returnUrl = getReturnUrl();
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
-  console.log({redirect_uri:redirect_uri?.toString()});
-  const googleCallbackUrl =
-    redirect_uri &&
-    `${IDENTITY_SERVER_URI}/ExternalLogin/GoogleCallback?returnUrl=${redirect_uri}`;
 
-  const onEmailFormSubmit = async (e: FormEvent) => {
+  const onEmailFormFinish = (email:string, isExist: boolean)=>{
     if(!redirect_uri) return;
-    e.preventDefault();
-
-    try {
-      const { isExist } = await checkEmailExists(email);
-
-      if (isExist) {
-        setShowPasswordForm(true);
-      } else {
-        const redurectURL = new URL(redirect_uri);
-        redurectURL.searchParams.append("error", "NotFound");
-        redurectURL.searchParams.append("email", email);
-        window.location.href = redurectURL.toString();
-      }
-    } catch (err) {
-      console.log(err);
+    if (isExist) {
+      setEmailForPasswordForm(email);
+    } else {
+      const redurectURL = new URL(redirect_uri);
+      redurectURL.searchParams.append("error", "NotFound");
+      redurectURL.searchParams.append("email", email);
+      window.location.href = redurectURL.toString();
     }
-  };
+  }
 
-  const onPasswordFormSubmit = async (e: FormEvent) => {
-    if (!returnUrl) return;
-    e.preventDefault();
+  const onPasswordFormBack = ()=>{
+    setEmailForPasswordForm('');
+  }
 
-    try {
-      const response = await login({
-        email,
-        password,
-        returnUrl: returnUrl.toString(),
-      });
-
-      window.location.href = response.returnUrl;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  if (!returnUrl || !redirect_uri || !googleCallbackUrl) {
+  if (!returnUrl || !redirect_uri) {
     return <div>ReturnUrl not found</div>;
   }
 
   return (
-    <div className="App">
-      <div className={styles.formsWrapper}>
-        {!showPasswordForm && (
-          <>
-            <GoogleSignIn callbackUrl={googleCallbackUrl} />
-            <form onSubmit={onEmailFormSubmit} className={styles.fluidForm}>
-              <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter Email"
-                className={styles.input}
-              />
-            </form>
-          </>
-        )}
-        {showPasswordForm && (
-          <>
-            <p>
-              Enter Password for <br />
-              {email}
-            </p>
-            <form onSubmit={onPasswordFormSubmit} className={styles.fluidForm}>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter Password"
-                className={styles.input}
-              />
-            </form>
-          </>
-        )}
-      </div>
+    <div>
+      <SwitchTransition mode="out-in">
+          <CSSTransition
+            key={emailForPasswordForm}
+            nodeRef={animRef}
+            addEndListener={(done) => {
+              animRef.current?.addEventListener("transitionend", done, false);
+            }}
+            classNames="fade"
+          >
+            <div ref={animRef}>
+              {emailForPasswordForm ? (
+                  <PasswordForm email={emailForPasswordForm} onBack={onPasswordFormBack} returnUrl={returnUrl.toString()} />
+              ) : <div className={commonStyles.stack}>
+                <GoogleSignIn redirect_uri={redirect_uri} />
+                <EmailForm onFinish={onEmailFormFinish} />
+              </div>}
+            </div>
+          </CSSTransition>
+      </SwitchTransition>
     </div>
   );
 };
