@@ -1,6 +1,7 @@
 import { login } from '../api/idp';
 import commonStyles from '../styles/common.module.css';
 import {FC, FormEvent, useState} from 'react';
+import SendButton from './SendButton/SendButton';
 
 type PasswordFormProps = {
   email: string;
@@ -39,7 +40,7 @@ export const PasswordForm:FC<PasswordFormProps> = ({email, onBack, returnUrl}) =
         Enter Password for <br />
         {email}
       </p>
-      <form onSubmit={handleSubmit} className={commonStyles.grid}>
+      <form onSubmit={handleSubmit} className={commonStyles.formGrid}>
         <input
           type="password"
           value={password}
@@ -48,6 +49,7 @@ export const PasswordForm:FC<PasswordFormProps> = ({email, onBack, returnUrl}) =
           className={commonStyles.input}
           disabled={disabled}
         />
+        <SendButton type="submit" disabled={disabled} />
       </form>
       <div onClick={onBack}>Back</div>
     </div>
