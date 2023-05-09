@@ -1,5 +1,5 @@
-import { login } from '../../api/idp';
-import commonStyles from '../../styles/common.module.css';
+import { login } from '../api/idp';
+import commonStyles from '../styles/common.module.css';
 import {FC, FormEvent, useState} from 'react';
 
 type PasswordFormProps = {

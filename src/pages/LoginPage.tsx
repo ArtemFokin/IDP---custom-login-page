@@ -1,10 +1,6 @@
-import { FormEvent, useRef, useState } from "react";
-import { checkEmailExists, login } from "../api/idp";
-import { sendAccountNotFound } from "../api/parentWindow";
+import {  useMemo, useRef, useState } from "react";
 import { GoogleSignIn } from "../components/GoogleSinIn";
-import { IDENTITY_SERVER_URI } from "../constants";
-import styles from "./LoginPage.module.css";
-import { PasswordForm } from "../components/PasswordForm/PasswordForm";
+import { PasswordForm } from "../components/PasswordForm";
 import commonStyles from '../styles/common.module.css';
 import { EmailForm } from "../components/EmailForm";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
@@ -23,10 +19,12 @@ const getReturnUrl = (): URL | undefined => {
 
 const LoginPage = () => {
   const [emailForPasswordForm, setEmailForPasswordForm] = useState('');
+  
   const animRef = useRef<HTMLDivElement | null>(null);
-  const returnUrl = getReturnUrl();
+  
+  const returnUrl = useMemo(getReturnUrl, []);
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
-
+  
   const onEmailFormFinish = (email:string, isExist: boolean)=>{
     if(!redirect_uri) return;
     if (isExist) {
