@@ -4,6 +4,7 @@ import { PasswordForm } from "../components/PasswordForm/PasswordForm";
 import commonStyles from "../styles/common.module.scss";
 import { EmailForm } from "../components/EmailForm";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
+import OTPForm from "../components/OTPForm/OTPForm";
 
 const getReturnUrl = (): URL | undefined => {
     try {
@@ -17,8 +18,16 @@ const getReturnUrl = (): URL | undefined => {
     }
 };
 
+enum Screens {
+    DEFAULT = "DEFAULT",
+    PASSWORD_EXISTS = "PASSWORD_EXISTS",
+    OTP = "OTP",
+}
+
 const LoginPage = () => {
-    const [emailForPasswordForm, setEmailForPasswordForm] = useState("");
+    const [activeScreen, setActiveScreen] = useState(Screens.DEFAULT);
+
+    const [email, setEmail] = useState("");
 
     const animRef = useRef<HTMLDivElement | null>(null);
 
@@ -28,17 +37,47 @@ const LoginPage = () => {
     const onEmailFormFinish = (email: string, isExist: boolean) => {
         if (!redirect_uri) return;
         if (isExist) {
-            setEmailForPasswordForm(email);
+            setEmail(email);
+            setActiveScreen(Screens.PASSWORD_EXISTS);
         } else {
-            const redurectURL = new URL(redirect_uri);
-            redurectURL.searchParams.append("error", "NotFound");
-            redurectURL.searchParams.append("email", email);
-            window.location.href = redurectURL.toString();
+            //TODO: if we on claim page
+            setEmail(email);
+            setActiveScreen(Screens.OTP);
+            // const redurectURL = new URL(redirect_uri);
+            // redurectURL.searchParams.append("error", "NotFound");
+            // redurectURL.searchParams.append("email", email);
+            // window.location.href = redurectURL.toString();
         }
     };
 
-    const onPasswordFormBack = () => {
-        setEmailForPasswordForm("");
+    const displayDefaultScreen = () => {
+        setEmail("");
+        setActiveScreen(Screens.DEFAULT);
+    };
+
+    const defaultScreen = (
+        <div className={commonStyles.stack}>
+            <GoogleSignIn redirect_uri={redirect_uri || ""} />
+            <EmailForm onFinish={onEmailFormFinish} />
+        </div>
+    );
+
+    const renderActiveScreen = () => {
+        switch (activeScreen) {
+            case Screens.OTP:
+                return <OTPForm onBack={displayDefaultScreen} email={email} />;
+            case Screens.PASSWORD_EXISTS:
+                return (
+                    <PasswordForm
+                        email={email}
+                        onBack={displayDefaultScreen}
+                        returnUrl={returnUrl?.toString() || ""}
+                    />
+                );
+            case Screens.DEFAULT:
+            default:
+                return defaultScreen;
+        }
     };
 
     if (!returnUrl || !redirect_uri) {
@@ -49,7 +88,7 @@ const LoginPage = () => {
         <div>
             <SwitchTransition mode="out-in">
                 <CSSTransition
-                    key={emailForPasswordForm}
+                    key={activeScreen}
                     nodeRef={animRef}
                     addEndListener={(done) => {
                         animRef.current?.addEventListener(
@@ -60,20 +99,7 @@ const LoginPage = () => {
                     }}
                     classNames="fade"
                 >
-                    <div ref={animRef}>
-                        {emailForPasswordForm ? (
-                            <PasswordForm
-                                email={emailForPasswordForm}
-                                onBack={onPasswordFormBack}
-                                returnUrl={returnUrl.toString()}
-                            />
-                        ) : (
-                            <div className={commonStyles.stack}>
-                                <GoogleSignIn redirect_uri={redirect_uri} />
-                                <EmailForm onFinish={onEmailFormFinish} />
-                            </div>
-                        )}
-                    </div>
+                    <div ref={animRef}>{renderActiveScreen()}</div>
                 </CSSTransition>
             </SwitchTransition>
         </div>

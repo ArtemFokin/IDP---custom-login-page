@@ -50,7 +50,7 @@ export const PasswordForm: FC<PasswordFormProps> = ({
                     {email}
                 </p>
             </div>
-            <form onSubmit={handleSubmit} className={commonStyles.formGrid}>
+            <form onSubmit={handleSubmit} className={commonStyles.oneLineForm}>
                 <input
                     type="password"
                     value={password}
