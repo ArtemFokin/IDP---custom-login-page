@@ -1,12 +1,15 @@
 import { FC, useEffect, useRef } from "react";
-import { GOOGLE_CLIENT_ID, IDENTITY_SERVER_URI } from "../constants";
-import { Portal } from 'react-portal';
+import { Portal } from "react-portal";
 
-export const GoogleSignIn: FC<{ redirect_uri: string }> = ({ redirect_uri }) => {
+import { GOOGLE_CLIENT_ID, IDENTITY_SERVER_URI } from "../constants";
+
+export const GoogleSignIn: FC<{ redirect_uri: string }> = ({
+  redirect_uri,
+}) => {
   const isMountedRef = useRef(false);
   const googleCallbackUrl =
-  redirect_uri &&
-  `${IDENTITY_SERVER_URI}/ExternalLogin/GoogleCallback?returnUrl=${redirect_uri}`;
+    redirect_uri &&
+    `${IDENTITY_SERVER_URI}/ExternalLogin/GoogleCallback?returnUrl=${redirect_uri}`;
   useEffect(() => {
     if (isMountedRef.current) return;
     isMountedRef.current = true;
