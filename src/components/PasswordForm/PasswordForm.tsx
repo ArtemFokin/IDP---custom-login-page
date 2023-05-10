@@ -45,7 +45,7 @@ export const PasswordForm: FC<PasswordFormProps> = ({
         <p className={commonStyles.text}>
           <IoChevronBackCircleOutline
             onClick={onBack}
-            className={styles.backBtn}
+            className={commonStyles.inlineBackBtn}
           />
           Enter Password for
           <br />

@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 import { validatePassword } from "../../helpers/validation";
 import commonStyles from "../../styles/common.module.scss";
@@ -52,7 +53,7 @@ const validate = (values: FormValues) => {
   return errors;
 };
 
-const OTPForm: FC<OTPFormProps> = ({ email }) => {
+const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FormErrors>(initialErrors);
   const [loading, setLoading] = useState(false);
@@ -94,6 +95,15 @@ const OTPForm: FC<OTPFormProps> = ({ email }) => {
 
   return (
     <form className={commonStyles.stack} onSubmit={onSubmit}>
+      <p className={commonStyles.text}>
+        <IoChevronBackCircleOutline
+          onClick={onBack}
+          className={commonStyles.inlineBackBtn}
+        />
+        Conirm email
+        <br />
+        {email}
+      </p>
       <input type="email" hidden name="email" value={email} />
       <Input
         name="code"
