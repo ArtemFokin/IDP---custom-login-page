@@ -9,6 +9,7 @@ import {
 
 import { validatePassword } from "../../helpers/validation";
 import commonStyles from "../../styles/common.module.scss";
+import Button from "../Button/Button";
 import Input from "../Input/Input";
 
 type OTPFormProps = {
@@ -114,9 +115,9 @@ const OTPForm: FC<OTPFormProps> = () => {
         error={errors.confirmPassword}
         disabled={loading}
       />
-      <button type="submit" disabled={loading}>
+      <Button type="submit" disabled={loading}>
         Create Account
-      </button>
+      </Button>
     </form>
   );
 };
