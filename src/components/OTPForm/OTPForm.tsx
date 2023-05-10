@@ -59,6 +59,7 @@ const OTPForm: FC<OTPFormProps> = () => {
   const [isDirty, setIsDirty] = useState(false);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    console.log("handle change", e.target.name, e.target.value);
     setValues((val) => ({
       ...val,
       [e.target.name]: e.target.value,
