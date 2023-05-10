@@ -99,9 +99,9 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
     try {
       const formErrors = validate(values);
 
-      if (formErrors) {
+      if (Object.values(formErrors).some((v) => !v)) {
         setErrors(formErrors);
-        throw new Error("Form values invalid");
+        throw new Error("Not all values are valid");
       }
 
       // await createUserByOTP({
@@ -140,7 +140,7 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
       <Input
         name="code"
         type="text"
-        placeholder="Code"
+        placeholder="Code from email"
         onChange={handleChange}
         value={values.code}
         error={errors.code}
