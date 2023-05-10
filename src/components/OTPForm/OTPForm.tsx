@@ -103,7 +103,7 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
         <br />
         {email}
       </p>
-      <input type="email" hidden name="email" value={email} />
+      {/* <input type="name" hidden name="email" value={email} /> */}
       <Input
         name="code"
         type="text"
