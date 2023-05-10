@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useEffect, useState } from "react";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 import { login } from "../../api/idp";
@@ -19,7 +19,12 @@ export const PasswordForm: FC<PasswordFormProps> = ({
   returnUrl,
 }) => {
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    setPasswordError("");
+  }, [password]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -34,11 +39,13 @@ export const PasswordForm: FC<PasswordFormProps> = ({
 
       window.location.href = response.returnUrl;
     } catch (err) {
+      setPasswordError("Incorrect password or email");
       console.log(err);
     }
 
     setDisabled(false);
   };
+
   return (
     <div className={commonStyles.stack}>
       <div className={styles.headerBox}>
@@ -52,17 +59,22 @@ export const PasswordForm: FC<PasswordFormProps> = ({
           {email}
         </p>
       </div>
-      <form onSubmit={handleSubmit} className={commonStyles.oneLineForm}>
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter Password"
-          disabled={disabled}
-          autoFocus
-        />
-        <SendButton type="submit" disabled={disabled} />
-      </form>
+      <div>
+        <form onSubmit={handleSubmit} className={commonStyles.oneLineForm}>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter Password"
+            disabled={disabled}
+            autoFocus
+          />
+          <SendButton type="submit" disabled={disabled} />
+        </form>
+        {passwordError && (
+          <p className={commonStyles.textError}>{passwordError}</p>
+        )}
+      </div>
     </div>
   );
 };
