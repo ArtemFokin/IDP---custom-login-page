@@ -3,13 +3,13 @@
 
 .backBtn {
   font-size: 20px;
-  color: #0f9bd6;
+  color: var(--primaryColor);
   display: inline-block;
   vertical-align: middle;
   margin-right: 4px;
   margin-top: -3px;
   cursor: pointer;
   &:hover {
-    color: rgba(15, 155, 214, 0.25);
+    color: var(--primaryColorDark);
   }
 }
