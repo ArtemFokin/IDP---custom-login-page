@@ -37,7 +37,7 @@ export const GoogleSignIn: FC<{ redirect_uri: string }> = ({
         data-size="large"
         data-theme="outline"
         data-text="sign_in_with"
-        data-shape="rectangular"
+        data-shape="pill"
         data-logo_alignment="left"
       />
     </>
