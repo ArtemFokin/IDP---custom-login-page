@@ -110,11 +110,12 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
         value={values.code}
         error={errors.code}
         disabled={loading}
+        autoFocus
       />
       <Input
         name="password"
         type="password"
-        placeholder="Password"
+        placeholder="New password"
         onChange={handleChange}
         value={values.password}
         error={errors.password}

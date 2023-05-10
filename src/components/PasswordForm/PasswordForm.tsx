@@ -59,6 +59,7 @@ export const PasswordForm: FC<PasswordFormProps> = ({
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter Password"
           disabled={disabled}
+          autoFocus
         />
         <SendButton type="submit" disabled={disabled} />
       </form>

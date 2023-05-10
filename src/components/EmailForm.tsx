@@ -27,12 +27,14 @@ export const EmailForm: FC<EmailFormProps> = ({ onFinish }) => {
 
   return (
     <form onSubmit={onSubmit} className={commonStyles.oneLineForm}>
+      <p className={commonStyles.text}>Login to NiftyBridge Wallet</p>
       <Input
         type="text"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter Email"
         disabled={disabled}
+        autoFocus
       />
       <SendButton type="submit" disabled={disabled} />
     </form>
