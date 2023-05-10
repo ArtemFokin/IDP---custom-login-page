@@ -26,6 +26,10 @@
     opacity: 0.7;
     cursor: default;
   }
+
+  &--password {
+    padding-right: 30px;
+  }
 }
 
 .error {
@@ -33,4 +37,18 @@
   font-size: 12px;
   margin: 0;
   text-align: left;
+}
+
+.endAdornment {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--primaryColor);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--primaryColorDark);
+  }
 }
