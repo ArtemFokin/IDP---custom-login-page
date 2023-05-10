@@ -12,6 +12,9 @@ export const generateOTPCode = async (body: GenerateOTPCodeBody) => {
   const response = await fetch(`${WALLET_API_URI}/auth/generateOtpCode`, {
     method: "POST",
     body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
   if (!response.ok) {
@@ -36,6 +39,9 @@ export const createUserByOTP = async (body: CreateUserByOTPBody) => {
   const response = await fetch(`${WALLET_API_URI}/auth/createUserByOtp`, {
     method: "POST",
     body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
   if (!response.ok) {
