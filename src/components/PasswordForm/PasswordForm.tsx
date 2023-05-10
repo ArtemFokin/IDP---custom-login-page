@@ -42,11 +42,11 @@ export const PasswordForm: FC<PasswordFormProps> = ({
   return (
     <div className={commonStyles.stack}>
       <div className={styles.headerBox}>
-        <IoChevronBackCircleOutline
-          onClick={onBack}
-          className={styles.backBtn}
-        />
         <p className={commonStyles.text}>
+          <IoChevronBackCircleOutline
+            onClick={onBack}
+            className={styles.backBtn}
+          />
           Enter Password for
           <br />
           {email}
