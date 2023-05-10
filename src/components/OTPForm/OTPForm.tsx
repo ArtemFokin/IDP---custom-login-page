@@ -9,7 +9,8 @@ import {
 } from "react";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 
-import { generateOTPCode } from "../../api/ncwallet";
+import { login } from "../../api/idp";
+import { createUserByOTP, generateOTPCode } from "../../api/ncwallet";
 import { validatePassword } from "../../helpers/validation";
 import commonStyles from "../../styles/common.module.scss";
 import Button from "../Button/Button";
@@ -58,7 +59,7 @@ type OTPFormProps = {
   returnUrl: string;
 };
 
-const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
+const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError, returnUrl }) => {
   const isMountedRef = useRef(false);
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FormErrors>(initialErrors);
@@ -78,6 +79,12 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
     });
   }, [sendOtpCode, onError]);
 
+  useEffect(() => {
+    if (!isDirty) return;
+    const formErrors = validate(values);
+    setErrors(formErrors);
+  }, [values, isDirty]);
+
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setValues((val) => ({
       ...val,
@@ -85,12 +92,6 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
     }));
     setFormError("");
   }, []);
-
-  useEffect(() => {
-    if (!isDirty) return;
-    const formErrors = validate(values);
-    setErrors(formErrors);
-  }, [values, isDirty]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -104,19 +105,19 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
         throw new Error("Not all values are valid");
       }
 
-      // await createUserByOTP({
-      //   email,
-      //   otpCode: values.code,
-      //   password: values.password,
-      // });
+      await createUserByOTP({
+        email,
+        otpCode: values.code,
+        password: values.password,
+      });
 
-      // const response = await login({
-      //   email,
-      //   password: values.password,
-      //   returnUrl: returnUrl.toString(),
-      // });
+      const response = await login({
+        email,
+        password: values.password,
+        returnUrl: returnUrl.toString(),
+      });
 
-      // window.location.href = response.returnUrl;
+      window.location.href = response.returnUrl;
     } catch (err: any) {
       console.error(err.message);
       setFormError(err.message || "Account wasn't created");
