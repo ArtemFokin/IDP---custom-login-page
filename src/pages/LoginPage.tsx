@@ -69,7 +69,6 @@ const LoginPage = () => {
     <div className={commonStyles.stack}>
       <p className={commonStyles.text}>Login to NiftyBridge Wallet</p>
       <GoogleSignIn redirect_uri={redirect_uri || ""} />
-      <p className={commonStyles.text}>Or</p>
       <EmailForm onFinish={onEmailFormFinish} />
     </div>
   );
