@@ -2,6 +2,7 @@ import { FC, FormEvent, useState } from "react";
 
 import { checkEmailExists } from "../api/idp";
 import commonStyles from "../styles/common.module.scss";
+import Input from "./Input/Input";
 import SendButton from "./SendButton/SendButton";
 
 type EmailFormProps = {
@@ -26,12 +27,11 @@ export const EmailForm: FC<EmailFormProps> = ({ onFinish }) => {
 
   return (
     <form onSubmit={onSubmit} className={commonStyles.oneLineForm}>
-      <input
+      <Input
         type="text"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter Email"
-        className={commonStyles.input}
         disabled={disabled}
       />
       <SendButton type="submit" disabled={disabled} />

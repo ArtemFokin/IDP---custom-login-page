@@ -1,24 +1,122 @@
-import { FC, FormEvent } from "react";
+import {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
+import { validatePassword } from "../../helpers/validation";
 import commonStyles from "../../styles/common.module.scss";
+import Input from "../Input/Input";
 
 type OTPFormProps = {
   onBack: () => void;
   email: string;
 };
 
+type FormValues = {
+  code: string;
+  password: string;
+  confirmPassword: string;
+};
+
+const initialValues: FormValues = {
+  code: "",
+  password: "",
+  confirmPassword: "",
+};
+
+type FormErrors = Partial<FormValues>;
+
+const initialErrors: FormErrors = {};
+
+const validate = (values: FormValues) => {
+  const errors: FormErrors = {};
+
+  if (!values.code) {
+    errors.code = "Required";
+  }
+  const passwordError = validatePassword(values.password);
+  if (passwordError) {
+    errors.password = passwordError;
+  }
+  if (!values.confirmPassword) {
+    errors.confirmPassword = "Required";
+  } else if (values.password && values.confirmPassword !== values.password) {
+    errors.confirmPassword = "passwords not equal";
+  }
+
+  return errors;
+};
+
 const OTPForm: FC<OTPFormProps> = () => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState<FormErrors>(initialErrors);
+  const [loading, setLoading] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setValues((val) => ({
+      ...val,
+      [e.target.name]: e.target.value,
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const formErrors = validate(values);
+    setErrors(formErrors);
+  }, [values, isDirty]);
+
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setIsDirty(true);
+    try {
+      const formErrors = validate(values);
+
+      if (formErrors) {
+        setErrors(formErrors);
+        throw new Error("Form values invalid");
+      }
+    } catch (err) {}
+
+    setLoading(false);
+
     console.log(e);
   };
 
   return (
     <form className={commonStyles.stack} onSubmit={onSubmit}>
-      <input type="text" placeholder="Code" />
-      <input type="password" placeholder="Password" />
-      <input type="password" placeholder="Confirm Password" />
-      <button type="submit">Create Account</button>
+      <Input
+        type="text"
+        placeholder="Code"
+        onChange={handleChange}
+        value={values.code}
+        error={errors.code}
+        disabled={loading}
+      />
+      <Input
+        type="password"
+        placeholder="Password"
+        onChange={handleChange}
+        value={values.password}
+        error={errors.password}
+        disabled={loading}
+      />
+      <Input
+        type="password"
+        placeholder="Confirm Password"
+        onChange={handleChange}
+        value={values.confirmPassword}
+        error={errors.confirmPassword}
+        disabled={loading}
+      />
+      <button type="submit" disabled={loading}>
+        Create Account
+      </button>
     </form>
   );
 };

@@ -3,6 +3,7 @@ import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 import { login } from "../../api/idp";
 import commonStyles from "../../styles/common.module.scss";
+import Input from "../Input/Input";
 import SendButton from "../SendButton/SendButton";
 import styles from "./styles.module.css";
 
@@ -52,12 +53,11 @@ export const PasswordForm: FC<PasswordFormProps> = ({
         </p>
       </div>
       <form onSubmit={handleSubmit} className={commonStyles.oneLineForm}>
-        <input
+        <Input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter Password"
-          className={commonStyles.input}
           disabled={disabled}
         />
         <SendButton type="submit" disabled={disabled} />
