@@ -4,19 +4,16 @@ import {
   FormEvent,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 
+import { generateOTPCode } from "../../api/ncwallet";
 import { validatePassword } from "../../helpers/validation";
 import commonStyles from "../../styles/common.module.scss";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
-
-type OTPFormProps = {
-  onBack: () => void;
-  email: string;
-};
 
 type FormValues = {
   code: string;
@@ -54,18 +51,39 @@ const validate = (values: FormValues) => {
   return errors;
 };
 
-const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
+type OTPFormProps = {
+  onBack: () => void;
+  onError: (msg: string) => void;
+  email: string;
+  returnUrl: string;
+};
+
+const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
+  const isMountedRef = useRef(false);
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FormErrors>(initialErrors);
   const [loading, setLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  const sendOtpCode = useCallback(() => generateOTPCode({ email }), [email]);
+
+  useEffect(() => {
+    if (isMountedRef.current) return;
+    isMountedRef.current = true;
+
+    sendOtpCode().catch((err) => {
+      console.error(err);
+      onError("Otp code wasn't sent, try again later");
+    });
+  }, [sendOtpCode, onError]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    console.log("handle change", e.target.name, e.target.value);
     setValues((val) => ({
       ...val,
       [e.target.name]: e.target.value,
     }));
+    setFormError("");
   }, []);
 
   useEffect(() => {
@@ -74,7 +92,7 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
     setErrors(formErrors);
   }, [values, isDirty]);
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setIsDirty(true);
@@ -85,7 +103,24 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
         setErrors(formErrors);
         throw new Error("Form values invalid");
       }
-    } catch (err) {}
+
+      // await createUserByOTP({
+      //   email,
+      //   otpCode: values.code,
+      //   password: values.password,
+      // });
+
+      // const response = await login({
+      //   email,
+      //   password: values.password,
+      //   returnUrl: returnUrl.toString(),
+      // });
+
+      // window.location.href = response.returnUrl;
+    } catch (err: any) {
+      console.error(err.message);
+      setFormError(err.message || "Account wasn't created");
+    }
 
     setLoading(false);
   };
@@ -97,7 +132,7 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
           onClick={onBack}
           className={commonStyles.inlineBackBtn}
         />
-        Conirm email
+        Confirm email to create Account
         <br />
         {email}
       </p>
@@ -133,6 +168,7 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
       <Button type="submit" disabled={loading}>
         Create Account
       </Button>
+      {formError && <p className={commonStyles.textError}>{formError}</p>}
     </form>
   );
 };

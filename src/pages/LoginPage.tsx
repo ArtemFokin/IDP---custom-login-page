@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 
 import { EmailForm } from "../components/EmailForm";
+import ErrorScreen from "../components/ErrorScreen/ErrorScreen";
 import { GoogleSignIn } from "../components/GoogleSinIn";
 import OTPForm from "../components/OTPForm/OTPForm";
 import { PasswordForm } from "../components/PasswordForm/PasswordForm";
@@ -23,12 +24,14 @@ enum Screens {
   DEFAULT = "DEFAULT",
   PASSWORD_EXISTS = "PASSWORD_EXISTS",
   OTP = "OTP",
+  ERROR = "ERROR",
 }
 
 const LoginPage = () => {
   const [activeScreen, setActiveScreen] = useState(Screens.DEFAULT);
 
   const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const animRef = useRef<HTMLDivElement | null>(null);
 
@@ -51,29 +54,50 @@ const LoginPage = () => {
     }
   };
 
+  const onError = (msg: string) => {
+    setErrorMessage(msg);
+    setActiveScreen(Screens.ERROR);
+  };
+
   const displayDefaultScreen = () => {
+    setErrorMessage("");
     setEmail("");
     setActiveScreen(Screens.DEFAULT);
   };
 
   const defaultScreen = (
     <div className={commonStyles.stack}>
+      <p className={commonStyles.text}>Login to NiftyBridge Wallet</p>
       <GoogleSignIn redirect_uri={redirect_uri || ""} />
+      <p className={commonStyles.text}>Or</p>
       <EmailForm onFinish={onEmailFormFinish} />
     </div>
   );
 
   const renderActiveScreen = () => {
+    if (!returnUrl) return null;
+
     switch (activeScreen) {
       case Screens.OTP:
-        return <OTPForm onBack={displayDefaultScreen} email={email} />;
+        return (
+          <OTPForm
+            onBack={displayDefaultScreen}
+            email={email}
+            onError={onError}
+            returnUrl={returnUrl.toString()}
+          />
+        );
       case Screens.PASSWORD_EXISTS:
         return (
           <PasswordForm
             email={email}
             onBack={displayDefaultScreen}
-            returnUrl={returnUrl?.toString() || ""}
+            returnUrl={returnUrl.toString()}
           />
+        );
+      case Screens.ERROR:
+        return (
+          <ErrorScreen message={errorMessage} onReset={displayDefaultScreen} />
         );
       case Screens.DEFAULT:
       default:

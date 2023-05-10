@@ -27,7 +27,6 @@ export const EmailForm: FC<EmailFormProps> = ({ onFinish }) => {
 
   return (
     <form onSubmit={onSubmit} className={commonStyles.oneLineForm}>
-      <p className={commonStyles.text}>Login to NiftyBridge Wallet</p>
       <Input
         type="text"
         value={email}
