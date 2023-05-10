@@ -16,7 +16,8 @@
   -webkit-text-size-adjust: 100%;
 
   --primaryColor: #0f9bd6;
-  --primaryColorDark: rgba(15, 155, 214, 0.25);
+  --primaryColorDark: #177aa4;
+  --primaryColorLight: rgba(15, 155, 214, 0.25);
   --errorColor: #ff6565;
 }
 html {

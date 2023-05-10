@@ -52,7 +52,7 @@ const validate = (values: FormValues) => {
   return errors;
 };
 
-const OTPForm: FC<OTPFormProps> = () => {
+const OTPForm: FC<OTPFormProps> = ({ email }) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FormErrors>(initialErrors);
   const [loading, setLoading] = useState(false);
@@ -69,7 +69,9 @@ const OTPForm: FC<OTPFormProps> = () => {
   useEffect(() => {
     if (!isDirty) return;
     const formErrors = validate(values);
-    setErrors(formErrors);
+    if (Object.values(formErrors).some((v) => !!v)) {
+      setErrors(formErrors);
+    }
   }, [values, isDirty]);
 
   const onSubmit = (e: FormEvent) => {
@@ -92,7 +94,9 @@ const OTPForm: FC<OTPFormProps> = () => {
 
   return (
     <form className={commonStyles.stack} onSubmit={onSubmit}>
+      <input type="email" hidden name="email" value={email} />
       <Input
+        name="code"
         type="text"
         placeholder="Code"
         onChange={handleChange}
@@ -101,6 +105,7 @@ const OTPForm: FC<OTPFormProps> = () => {
         disabled={loading}
       />
       <Input
+        name="password"
         type="password"
         placeholder="Password"
         onChange={handleChange}
@@ -109,6 +114,7 @@ const OTPForm: FC<OTPFormProps> = () => {
         disabled={loading}
       />
       <Input
+        name="confirmPassword"
         type="password"
         placeholder="Confirm Password"
         onChange={handleChange}
