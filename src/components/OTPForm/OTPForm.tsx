@@ -35,6 +35,7 @@ type FormErrors = Partial<FormValues>;
 const initialErrors: FormErrors = {};
 
 const validate = (values: FormValues) => {
+  console.log(values);
   const errors: FormErrors = {};
 
   if (!values.code) {
@@ -89,8 +90,6 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
     } catch (err) {}
 
     setLoading(false);
-
-    console.log(e);
   };
 
   return (
