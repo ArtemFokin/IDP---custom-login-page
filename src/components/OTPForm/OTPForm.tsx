@@ -71,9 +71,7 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack }) => {
   useEffect(() => {
     if (!isDirty) return;
     const formErrors = validate(values);
-    if (Object.values(formErrors).some((v) => !!v)) {
-      setErrors(formErrors);
-    }
+    setErrors(formErrors);
   }, [values, isDirty]);
 
   const onSubmit = (e: FormEvent) => {
