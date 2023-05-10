@@ -71,11 +71,11 @@ const OTPForm: FC<OTPFormProps> = ({ email, onBack, onError }) => {
   useEffect(() => {
     if (isMountedRef.current) return;
     isMountedRef.current = true;
-
-    sendOtpCode().catch((err) => {
-      console.error(err);
-      onError("Otp code wasn't sent, try again later");
-    });
+    onError("Otp code wasn't sent, try again later");
+    // sendOtpCode().catch((err) => {
+    //   console.error(err);
+    //   onError("Otp code wasn't sent, try again later");
+    // });
   }, [sendOtpCode, onError]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
