@@ -9,11 +9,13 @@ type InitialScreenProps = {
   createAccountAllowed: boolean;
   onEmailFormFinish: (email: string, isExist: boolean) => void;
   returnUrl: string;
+  onError: (msg: string) => void;
 };
 const InitialScreen: FC<InitialScreenProps> = ({
   onEmailFormFinish,
   createAccountAllowed,
   returnUrl,
+  onError,
 }) => {
   return (
     <div className={commonStyles.stack}>
@@ -22,6 +24,7 @@ const InitialScreen: FC<InitialScreenProps> = ({
         <GoogleSignIn
           returnUrl={returnUrl}
           createAccountAllowed={createAccountAllowed}
+          onError={onError}
         />
       </div>
       <EmailForm onFinish={onEmailFormFinish} />

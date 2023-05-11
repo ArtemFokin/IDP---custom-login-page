@@ -43,9 +43,7 @@ const LoginPage = () => {
 
   const returnUrl = useMemo(getReturnUrl, []);
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
-  console.log({
-    returnUrl,
-  });
+
   const scopes = useMemo(
     () =>
       (returnUrl?.searchParams.get("scope")?.split(" ") || []).map((sc) =>
@@ -116,6 +114,7 @@ const LoginPage = () => {
             createAccountAllowed={createAccountAllowed}
             returnUrl={returnUrl.toString()}
             onEmailFormFinish={onEmailFormFinish}
+            onError={onError}
           />
         );
     }

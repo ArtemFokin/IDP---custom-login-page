@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useRef } from "react";
 import { Portal } from "react-portal";
 
-// import { googleLogin } from "../api/idp";
+import { googleLogin } from "../api/idp";
 import { GOOGLE_CLIENT_ID } from "../constants";
 
 const googleCbName = "googleSignInCb";
@@ -9,11 +9,20 @@ const googleCbName = "googleSignInCb";
 type GoogleSignInProps = {
   returnUrl: string;
   createAccountAllowed: boolean;
+  onError: (msg: string) => void;
+};
+
+type GoogleResponse = {
+  clientId: string;
+  client_id: string;
+  credential: string;
+  select_by: string;
 };
 
 export const GoogleSignIn: FC<GoogleSignInProps> = ({
   returnUrl,
   createAccountAllowed,
+  onError,
 }) => {
   const isMountedRef = useRef(false);
   // const googleCallbackUrl =
@@ -21,18 +30,21 @@ export const GoogleSignIn: FC<GoogleSignInProps> = ({
   //   `${IDENTITY_SERVER_URI}/ExternalLogin/GoogleCallback?returnUrl=${redirect_uri}`;
 
   const callbackFunc = useCallback(
-    async (response: string) => {
-      console.log({
-        response,
-      });
-      // await googleLogin({
-      //   token: googleId,
-      //   returnUrl: returnUrl,
-      //   createAllowed: createAccountAllowed,
-      // });
+    async ({ credential }: GoogleResponse) => {
+      try {
+        const { returnUrl: finishLoginUrl } = await googleLogin({
+          token: credential,
+          returnUrl,
+          createAllowed: createAccountAllowed,
+        });
+
+        window.location.href = finishLoginUrl;
+      } catch (err: any) {
+        onError(err.message || "Google SignIn failed");
+        console.error(err?.message);
+      }
     },
-    []
-    // [createAccountAllowed, returnUrl]
+    [createAccountAllowed, returnUrl, onError]
   );
 
   useEffect(() => {
