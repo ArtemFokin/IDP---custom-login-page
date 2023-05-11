@@ -36,6 +36,10 @@ const LoginPage = () => {
 
   const returnUrl = useMemo(getReturnUrl, []);
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
+  console.log({
+    returnUrl,
+    redirect_uri,
+  });
 
   const onEmailFormFinish = (userEmail: string, isExist: boolean) => {
     if (!redirect_uri) return;
