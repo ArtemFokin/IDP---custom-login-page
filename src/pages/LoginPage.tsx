@@ -5,6 +5,7 @@ import ErrorScreen from "../components/ErrorScreen/ErrorScreen";
 import InitialScreen from "../components/InitialScreen/InitialScreen";
 import OTPForm from "../components/OTPForm/OTPForm";
 import { PasswordForm } from "../components/PasswordForm/PasswordForm";
+import styles from "./styles.module.scss";
 
 const getReturnUrl = (): URL | undefined => {
   try {
@@ -104,7 +105,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <SwitchTransition mode="out-in">
         <CSSTransition
           key={activeScreen}
