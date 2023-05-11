@@ -26,6 +26,13 @@ enum Screens {
   ERROR = "ERROR",
 }
 
+enum Scopes {
+  create = "create",
+  openid = "openid",
+  profile = "profile",
+  offline_access = "offline_access",
+}
+
 const LoginPage = () => {
   const [activeScreen, setActiveScreen] = useState(Screens.DEFAULT);
 
@@ -40,6 +47,18 @@ const LoginPage = () => {
     returnUrl,
     redirect_uri,
   });
+  const scopes = useMemo(
+    () =>
+      (returnUrl?.searchParams.get("scope")?.split(" ") || []).map((sc) =>
+        sc.trim()
+      ) as Scopes[],
+    [returnUrl]
+  );
+
+  const createAccountAllowed = useMemo(
+    () => scopes.includes(Scopes.create),
+    [scopes]
+  );
 
   const onEmailFormFinish = (userEmail: string, isExist: boolean) => {
     if (!redirect_uri) return;
@@ -97,7 +116,8 @@ const LoginPage = () => {
       default:
         return (
           <InitialScreen
-            redirect_uri={redirect_uri}
+            createAccountAllowed={createAccountAllowed}
+            returnUrl={returnUrl.toString()}
             onEmailFormFinish={onEmailFormFinish}
           />
         );

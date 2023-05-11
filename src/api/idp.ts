@@ -48,3 +48,34 @@ export const login = async (body: LoginBody) => {
 
   return (await response.json()) as LoginResponse;
 };
+
+type GoogleLoginBody = {
+  token: string;
+  returnUrl: string;
+  createAllowed: boolean;
+};
+
+type GoogleLoginResponse = {
+  returnUrl: string;
+};
+
+export const googleLogin = async (body: GoogleLoginBody) => {
+  const response = await fetch(
+    `${IDENTITY_SERVER_URI}/api/account/googleLogin`,
+    {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    console.log(response);
+    throw new Error("Response is not ok");
+  }
+
+  return (await response.json()) as GoogleLoginResponse;
+};
