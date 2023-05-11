@@ -27,7 +27,7 @@ enum Screens {
 }
 
 enum Scopes {
-  create = "create",
+  createAllowed = "createAllowed",
   openid = "openid",
   profile = "profile",
   offline_access = "offline_access",
@@ -55,7 +55,7 @@ const LoginPage = () => {
   );
 
   const createAccountAllowed = useMemo(
-    () => scopes.includes(Scopes.create),
+    () => scopes.includes(Scopes.createAllowed),
     [scopes]
   );
 
