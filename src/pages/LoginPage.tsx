@@ -70,7 +70,7 @@ const LoginPage = () => {
     } else {
       const redurectURL = new URL(redirect_uri);
       redurectURL.searchParams.append("error", "NotFound");
-      redurectURL.searchParams.append("email", activeEmail);
+      redurectURL.searchParams.append("email", userEmail);
       window.location.href = redurectURL.toString();
     }
   };
