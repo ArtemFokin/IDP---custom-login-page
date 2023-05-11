@@ -38,6 +38,8 @@ export const GoogleSignIn: FC<GoogleSignInProps> = ({
           createAllowed: createAccountAllowed,
         });
 
+        console.log({ finishLoginUrl });
+
         window.location.href = finishLoginUrl;
       } catch (err: any) {
         onError(err.message || "Google SignIn failed");
