@@ -6,7 +6,7 @@ export type CheckEmailExistsResponse = {
 
 export const checkEmailExists = async (email: string) => {
   const response = await fetch(
-    `${IDENTITY_SERVER_URI}/api/account?email=${encodeURI(email)}`
+    `${IDENTITY_SERVER_URI}/api/account?email=${encodeURIComponent(email)}`
   );
 
   if (!response.ok) {
