@@ -36,7 +36,7 @@ enum Scopes {
 const LoginPage = () => {
   const [activeScreen, setActiveScreen] = useState(Screens.DEFAULT);
 
-  const [email, setEmail] = useState("");
+  const [activeEmail, setActiveEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const animRef = useRef<HTMLDivElement | null>(null);
@@ -45,7 +45,6 @@ const LoginPage = () => {
   const redirect_uri = returnUrl?.searchParams.get("redirect_uri");
   console.log({
     returnUrl,
-    redirect_uri,
   });
   const scopes = useMemo(
     () =>
@@ -63,16 +62,16 @@ const LoginPage = () => {
   const onEmailFormFinish = (userEmail: string, isExist: boolean) => {
     if (!redirect_uri) return;
     if (isExist) {
-      setEmail(userEmail);
+      setActiveEmail(userEmail);
       setActiveScreen(Screens.PASSWORD_EXISTS);
-    } else {
-      //TODO: if we on claim page
-      setEmail(userEmail);
+    } else if (createAccountAllowed) {
+      setActiveEmail(userEmail);
       setActiveScreen(Screens.OTP);
-      // const redurectURL = new URL(redirect_uri);
-      // redurectURL.searchParams.append("error", "NotFound");
-      // redurectURL.searchParams.append("email", email);
-      // window.location.href = redurectURL.toString();
+    } else {
+      const redurectURL = new URL(redirect_uri);
+      redurectURL.searchParams.append("error", "NotFound");
+      redurectURL.searchParams.append("email", activeEmail);
+      window.location.href = redurectURL.toString();
     }
   };
 
@@ -81,9 +80,9 @@ const LoginPage = () => {
     setActiveScreen(Screens.ERROR);
   };
 
-  const displayDefaultScreen = () => {
+  const resetScreens = () => {
     setErrorMessage("");
-    setEmail("");
+    setActiveEmail("");
     setActiveScreen(Screens.DEFAULT);
   };
 
@@ -94,8 +93,8 @@ const LoginPage = () => {
       case Screens.OTP:
         return (
           <OTPForm
-            onBack={displayDefaultScreen}
-            email={email}
+            onBack={resetScreens}
+            email={activeEmail}
             onError={onError}
             returnUrl={returnUrl.toString()}
           />
@@ -103,15 +102,13 @@ const LoginPage = () => {
       case Screens.PASSWORD_EXISTS:
         return (
           <PasswordForm
-            email={email}
-            onBack={displayDefaultScreen}
+            email={activeEmail}
+            onBack={resetScreens}
             returnUrl={returnUrl.toString()}
           />
         );
       case Screens.ERROR:
-        return (
-          <ErrorScreen message={errorMessage} onReset={displayDefaultScreen} />
-        );
+        return <ErrorScreen message={errorMessage} onReset={resetScreens} />;
       case Screens.DEFAULT:
       default:
         return (
